@@ -1,4 +1,4 @@
-clc, clear all
+clc, clear all, close all
 
 
 % preparing canvas
@@ -20,7 +20,7 @@ robot_strings_y = [height_of_hang_points robot_position_y height_of_hang_points]
 
 
 % preparing gcode
-g_code = fileread("test_6.nc");
+g_code = fileread("test_8.nc");
 gcode_lines = splitlines(string(g_code));
 
 
