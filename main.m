@@ -3,7 +3,7 @@ COM_CloseNXT all
 
 handle = COM_OpenNXT();
 COM_SetDefaultNXT(handle);
-Ports = [MOTOR_A  MOTOR_B];
+Ports = [MOTOR_A  MOTOR_B MOTOR_C];
 
 mL                   = NXTMotor(Ports(1));
 mL.SpeedRegulation   = false;
@@ -12,6 +12,10 @@ mL.ActionAtTachoLimit = 'Brake';
 mR                   = NXTMotor(Ports(2));
 mR.SpeedRegulation   = false;
 mR.ActionAtTachoLimit = 'Brake';
+
+mC                   = NXTMotor(Ports(3));
+mC.SpeedRegulation   = false;
+mC.ActionAtTachoLimit = 'Brake';
 
 distance_coeficient = 150;
 
@@ -149,10 +153,18 @@ for i=4:length(gcode_lines)-1
     if  draw_on_off == "G00"
         plot(coords_x,coords_y,'g')
         last_state_drawing = "G01";
+        mC.Power = -100;
+        mC.TachoLimit = 50;
+        mC.SendToNXT();
+        mC.WaitFor();
     
     % Drawing
     elseif draw_on_off == "G01"
         plot(coords_x,coords_y,'b',LineWidth = 2)
+        mC.Power = 100;
+        mC.TachoLimit = 50;
+        mC.SendToNXT();
+        mC.WaitFor();
     
     end
 
