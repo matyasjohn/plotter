@@ -20,7 +20,7 @@ robot_strings_y = [height_of_hang_points robot_position_y height_of_hang_points]
 
 
 % preparing gcode
-g_code = fileread("test_8.nc");
+g_code = fileread("test_7.nc");
 gcode_lines = splitlines(string(g_code));
 
 
@@ -112,7 +112,6 @@ for i=4:length(gcode_lines)-1
  
     if  draw_on_off == "G00"
         plot(coords_x,coords_y,'g')
-        last_state_drawing = "G01";
     
     % Drawing
     elseif draw_on_off == "G01"

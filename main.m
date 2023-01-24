@@ -18,7 +18,7 @@ mC.SpeedRegulation   = false;
 mC.ActionAtTachoLimit = 'Brake';
 
 distance_coeficient = 150;
-
+fix = 1;
 
 
 % preparing canvas
@@ -40,7 +40,7 @@ robot_strings_y = [height_of_hang_points robot_position_y height_of_hang_points]
 
 
 % preparing gcode
-g_code = fileread("test_8.nc");
+g_code = fileread("test_7.nc");
 gcode_lines = splitlines(string(g_code));
 
 
@@ -84,7 +84,6 @@ for i=4:length(gcode_lines)-1
         current_command = char(current_line(n));
         
         if current_command(1) == 'G'
-            last_state_drawing = draw_on_off;
             draw_on_off = string(current_command);
 
         elseif current_command(1) == 'X'
@@ -152,19 +151,26 @@ for i=4:length(gcode_lines)-1
  
     if  draw_on_off == "G00"
         plot(coords_x,coords_y,'g')
-        last_state_drawing = "G01";
-        mC.Power = -100;
-        mC.TachoLimit = 50;
-        mC.SendToNXT();
-        mC.WaitFor();
+
+        if fix == 1
+            mC.Power = -100;
+            mC.TachoLimit = 50;
+            mC.SendToNXT();
+            mC.WaitFor();
+            fix = 0;
+        end
     
     % Drawing
     elseif draw_on_off == "G01"
         plot(coords_x,coords_y,'b',LineWidth = 2)
-        mC.Power = 100;
-        mC.TachoLimit = 50;
-        mC.SendToNXT();
-        mC.WaitFor();
+
+        if fix == 0
+            mC.Power = 100;
+            mC.TachoLimit = 50;
+            mC.SendToNXT();
+            mC.WaitFor();
+            fix = 1;
+        end
     
     end
 
