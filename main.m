@@ -17,7 +17,7 @@ mC                   = NXTMotor(Ports(3));
 mC.SpeedRegulation   = false;
 mC.ActionAtTachoLimit = 'Brake';
 
-distance_coeficient = 150;
+distance_coeficient = 200;
 fix = 1;
 
 
@@ -40,7 +40,7 @@ robot_strings_y = [height_of_hang_points robot_position_y height_of_hang_points]
 
 
 % preparing gcode
-g_code = fileread("test_7.nc");
+g_code = fileread("VUT_gear.nc");
 gcode_lines = splitlines(string(g_code));
 
 
@@ -121,7 +121,32 @@ for i=4:length(gcode_lines)-1
     disp(motor_speeds_multiplier)
     disp(difference_between_strings)
 
+        % main drawing part <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
+ 
+    if  draw_on_off == "G00"
+        plot(coords_x,coords_y,'g')
+
+        if fix == 1
+            mC.Power = -100;
+            mC.TachoLimit = 70;
+            mC.SendToNXT();
+            mC.WaitFor();
+            fix = 0;
+        end
     
+    % Drawing
+    elseif draw_on_off == "G01"
+        plot(coords_x,coords_y,'b',LineWidth = 2)
+
+        if fix == 0
+            mC.Power = 100;
+            mC.TachoLimit = 70;
+            mC.SendToNXT();
+            mC.WaitFor();
+            fix = 1;
+        end
+    
+    end
 
     %TO DO motor direction + amount implementation
     
@@ -147,32 +172,7 @@ for i=4:length(gcode_lines)-1
     mL.WaitFor();
     mR.WaitFor();
 
-    % main drawing part <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
- 
-    if  draw_on_off == "G00"
-        plot(coords_x,coords_y,'g')
 
-        if fix == 1
-            mC.Power = -100;
-            mC.TachoLimit = 50;
-            mC.SendToNXT();
-            mC.WaitFor();
-            fix = 0;
-        end
-    
-    % Drawing
-    elseif draw_on_off == "G01"
-        plot(coords_x,coords_y,'b',LineWidth = 2)
-
-        if fix == 0
-            mC.Power = 100;
-            mC.TachoLimit = 50;
-            mC.SendToNXT();
-            mC.WaitFor();
-            fix = 1;
-        end
-    
-    end
 
     % storing coords for next loop
     coords_x(1) = coords_x(2);
